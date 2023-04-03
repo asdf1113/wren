@@ -11,7 +11,7 @@ public class wrenBaseListenerImpl extends wrenBaseListener {
 
     public void traval(ASTNode tree){
         String type = tree.type;
-        System.out.println(tree.toStringTree());
+        //System.out.println(tree.toStringTree());
         switch (type){
             case "program":{
                 traval(((ASTProgram)tree).identifier);
@@ -207,11 +207,16 @@ public class wrenBaseListenerImpl extends wrenBaseListener {
 
     @Override
     public void enterInteger_expr(wrenParser.Integer_exprContext ctx) {
+//        System.out.println(ctx.getChild(0).getChild(0).getText());
+        if(ctx.getChild(0).getChild(0)!=null && (ctx.getChild(0).getChild(0).getText().equals("("))) return;
         nodeStack.push(new ASTExpression());
     }
 
     @Override
     public void exitInteger_expr(wrenParser.Integer_exprContext ctx) {
+        if(ctx.getChild(0).getChild(0)!=null && (ctx.getChild(0).getChild(0).getText().equals("("))){
+            return;
+        }
         ASTNode thisNode = nodeStack.pop();
         ASTNode parentNode = nodeStack.peek();
         if(parentNode.getClass()==ASTCommandWrite.class) {
@@ -256,6 +261,7 @@ public class wrenBaseListenerImpl extends wrenBaseListener {
             ((ASTExpression)parentNode).op=(ASTOperator) thisNode;
         }
     }
+
 
     @Override
     public void enterBoolean_expr(wrenParser.Boolean_exprContext ctx) {
@@ -330,7 +336,7 @@ public class wrenBaseListenerImpl extends wrenBaseListener {
 
     @Override
     public void visitTerminal(TerminalNode node) {
-        System.out.println(node.getSymbol());
+        //System.out.println(node.getSymbol());
        int id = node.getSymbol().getType();
        String text=node.getSymbol().getText();
        ASTNode parentNode=nodeStack.peek();
@@ -343,6 +349,7 @@ public class wrenBaseListenerImpl extends wrenBaseListener {
                }
            }
            break;
+           case 20:
            //true false
            case 18:
            case 19:
@@ -356,7 +363,6 @@ public class wrenBaseListenerImpl extends wrenBaseListener {
                }
            }
            break;
-
            case 34://minus
                //and or
            case 17:
@@ -377,9 +383,9 @@ public class wrenBaseListenerImpl extends wrenBaseListener {
                    ((ASTCommandRead) parentNode).identifier = new ASTIdentifier(text);
                }else if(parentNode.getClass() == ASTExpression.class){
                    if(((ASTExpression) parentNode).lExpr==null){
-                       ((ASTExpression) parentNode).lExpr = (ASTNode) new ASTNumeral(text);
+                       ((ASTExpression) parentNode).lExpr = (ASTNode) new ASTIdentifier(text);
                    }else {
-                       ((ASTExpression) parentNode).rExpr = (ASTNode) new ASTNumeral(text);
+                       ((ASTExpression) parentNode).rExpr = (ASTNode) new ASTIdentifier(text);
                    }
                }
 //               else if (parentNode.getClass() == ASTCommandWrite.class) {
