@@ -13,13 +13,11 @@ import java.util.regex.Pattern;
 public class Acc {
     public Integer reg;
     public Map<String,Integer> env;
-    public Map<String,Integer> lab;
     public ArrayList<String> stringLists;
 
     public Acc() {
         reg = 0;
         env = new HashMap<String,Integer>();
-        lab = new HashMap<String,Integer>();
         stringLists = new ArrayList<>();
     }
 
